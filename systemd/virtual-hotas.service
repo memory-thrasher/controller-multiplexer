@@ -1,0 +1,16 @@
+[Unit]
+Description=Virtual HOTAS multiplexer (VKB Gladiator NXT + Thrustmaster TWCS -> one joystick)
+Documentation=https://github.com/KarsMulder/evsieve
+# Keep retrying while waiting for both sticks to appear at boot / hotplug.
+StartLimitIntervalSec=0
+
+[Service]
+Type=notify
+# uinput must be available before evsieve can create the virtual device.
+ExecStartPre=-/sbin/modprobe uinput
+ExecStart=/home/sid/projects/controller-multiplexer/merge-hotas.sh
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

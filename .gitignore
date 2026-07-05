@@ -1,0 +1,6 @@
+# Editor / OS cruft
+*~
+*.swp
+.DS_Store
+
+# evsieve is a submodule; its build output lives inside it and is ignored there.

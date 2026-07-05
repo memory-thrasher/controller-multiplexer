@@ -1,0 +1,18 @@
+# Virtual HOTAS multiplexer — udev rules
+# Install to /etc/udev/rules.d/99-virtual-hotas.rules
+#
+# After editing:  sudo udevadm control --reload && sudo udevadm trigger
+
+# --- 1. Stop the ASRock LED Controller from masquerading as a joystick ---
+# It registers ABS axes and grabs the "js0" (first joystick) slot, which can
+# hijack a legacy game's auto-bind to "joystick 1". This declassifies it.
+SUBSYSTEM=="input", ATTRS{idVendor}=="26ce", ATTRS{idProduct}=="01a2", ENV{ID_INPUT_JOYSTICK}="0"
+
+# --- 2. Friendly, stable symlinks for the two flight controllers ---
+# (Survive USB-port changes, avoid the awkward © / spaces in the by-id names.)
+SUBSYSTEM=="input", KERNEL=="event*", ATTRS{idVendor}=="231d", ATTRS{idProduct}=="0200", ENV{ID_INPUT_JOYSTICK}=="1", SYMLINK+="input/vkb-stick"
+SUBSYSTEM=="input", KERNEL=="event*", ATTRS{idVendor}=="044f", ATTRS{idProduct}=="b687", ENV{ID_INPUT_JOYSTICK}=="1", SYMLINK+="input/twcs-throttle"
+
+# --- 3. (Re)start the multiplexer when either flight controller is plugged in ---
+ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", ATTRS{idVendor}=="231d", ATTRS{idProduct}=="0200", ENV{ID_INPUT_JOYSTICK}=="1", TAG+="systemd", ENV{SYSTEMD_WANTS}+="virtual-hotas.service"
+ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", ATTRS{idVendor}=="044f", ATTRS{idProduct}=="b687", ENV{ID_INPUT_JOYSTICK}=="1", TAG+="systemd", ENV{SYSTEMD_WANTS}+="virtual-hotas.service"

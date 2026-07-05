@@ -1,0 +1,3 @@
+[submodule "evsieve"]
+	path = evsieve
+	url = https://github.com/KarsMulder/evsieve.git
