@@ -11,13 +11,14 @@
 # Uses evsieve to read both real devices with EXCLUSIVE access (grab), so the
 # game sees only the merged virtual device.
 #
-# Virtual axis layout (9 analog axes + 2 POV-as-buttons):
+# Virtual axis layout (10 analog axes + 2 POV-as-buttons):
 #   X   (0)  = VKB roll                Rz       (5) = TWCS rudder rocker
 #   Y   (1)  = VKB pitch               Throttle (6) = VKB zoom (solo-throttle)
 #   Z   (2)  = TWCS throttle           Rudder   (7) = VKB grip twist
 #   Rx  (3)  = TWCS mini-stick X       Wheel    (8) = TWCS trim (native games only*)
-#   Ry  (4)  = TWCS mini-stick Y
+#   Ry  (4)  = TWCS mini-stick Y       Gas      (9) = VKB trigger as axis 0/1 (native only*)
 #   POV0 -> buttons 31-34 (VKB hat U/R/D/L)   POV1 -> buttons 35-38 (TWCS hat U/R/D/L)
+#   NOTE: the VKB trigger is ALSO button 1 (it drives both the button and the Gas axis).
 #
 #   * DirectInput/Proton exposes only 8 axes, so it shows codes 0-7 and drops
 #     Wheel (trim). Native/SDL2 games see all 9.
@@ -82,6 +83,12 @@ args=(
     --copy abs:hat0x:-1..0~@twcs btn:%725:0
     # drop the raw hat axes so they don't also appear as axes
     --block abs:hat0x@vkb abs:hat0y@vkb abs:hat0x@twcs abs:hat0y@twcs
+
+    # ---- VKB trigger (button 1) ALSO drives a 10th axis: Gas, binary 0/1 ----
+    # For games that read a trigger as an analog axis (gamepad style).
+    # --copy leaves the trigger working as a normal button, too (one input -> two outputs).
+    --copy btn:trigger:1@vkb abs:gas:1
+    --copy btn:trigger:0@vkb abs:gas:0
 )
 
 # ---- TWCS buttons 288..301 -> 744..757 (avoid clash with VKB's 288..303) ----

@@ -18,7 +18,7 @@ ignore it. (Its kernel `js0` node still exists for legacy `js`-only apps.)
 
 ## Merge mapping
 
-9 analog axes + both POV hats as buttons:
+10 analog axes + both POV hats as buttons:
 
 | Code | Virtual axis | Source | Notes |
 |---|---|---|---|
@@ -31,11 +31,16 @@ ignore it. (Its kernel `js0` node still exists for legacy `js`-only apps.)
 | 6 | Throttle | VKB zoom (solo-throttle) | |
 | 7 | Rudder | VKB grip twist | |
 | 8 | Wheel | TWCS trim | **native/SDL2 only** — see note |
+| 9 | Gas | VKB trigger (also button 1) | **native/SDL2 only** — 10th axis |
 
 **DirectInput 8-axis limit:** Proton/DirectInput games expose only 8 axes
-(codes 0–7), so they'll see everything **except trim** (Wheel). Native/SDL2
-games see all 9. To change which axes take priority for Proton, edit the axis
-maps in `merge-hotas.sh`.
+(codes 0–7), so they'll see everything **except trim (Wheel) and the
+trigger-axis (Gas)**. Native/SDL2 games see all 10. To change which axes take
+priority for Proton, edit the axis maps in `merge-hotas.sh`.
+
+**Trigger as axis:** the VKB trigger drives **both button 1 and the Gas axis**
+(via `--copy` — one input, two outputs), for games that read a trigger as an
+analog axis (gamepad style).
 
 **POV hats → buttons** (more broadly compatible than a 2nd hat axis):
 - VKB hat → buttons ~31–34 (Up/Right/Down/Left, codes 718–721)
